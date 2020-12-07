@@ -1,6 +1,31 @@
+import axios from 'axios';
 // Imports at the top of the file!
 // We never nest imports inside blocks of code!
 
+// TCP unifies all type of networking hardware devices
+// HTTP is a protocol for computers connected to the internet to communicate 
+// HTTP is built on top of TCP/IP
+
+// a URL can be thought of as the human readable version of an IP address
+
+axios
+.get('https://lambda-times-api.herokuapp.com/friends')
+.then(futureData => {
+  // future data for when the data actually arrives
+  // inside this block, we have the freedom to assume that the data is here
+  // functions that use callbacks
+  // console.log('2. Here is the future data: ', futureData)
+})
+.catch((err) => {
+  // handle the error
+  console.log(err)
+})
+
+// Statuses of promises
+// 1. Pending - neither fulfilled nor rejected
+// 2. Fulfilled - we have some data ie 200 OK
+// 3. Rejected - ie 404
+// 4. Settled - either fulfilled or rejected
 
 // 👉 TASK 1- Test out the following endpoints:
 
@@ -19,8 +44,7 @@
 
 // 👉 TASK 2- Select the "entry point", the element
 // inside of which we'll inject our dog cards 
-const entryPoint = null
-
+const entryPoint = document.querySelector('.entry');
 
 // 👉 TASK 3- `dogCardMaker` takes an object and returns a Dog Card.
 // Use this function to build a Card, and append it to the entry point.
@@ -29,14 +53,17 @@ function dogCardMaker({ imageURL, breed }) {
   const dogCard = document.createElement('div')
   const image = document.createElement('img')
   const heading = document.createElement('h3')
+
   // setting class names, attributes and text
   heading.textContent = `Breed: ${breed}`
   image.src = imageURL
   image.classList.add('dog-image')
   dogCard.classList.add('dog-card')
+
   // creating the hierarchy
   dogCard.appendChild(image)
   dogCard.appendChild(heading)
+
   // adding some interactivity
   dogCard.addEventListener('click', () => {
     dogCard.classList.toggle('selected')
@@ -48,13 +75,37 @@ function dogCardMaker({ imageURL, breed }) {
 
 // 👉 TASK 4- Bring the Axios library into the project using one of two methods:
 //    * Traditional way: put another script tag inside index.html (`https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js`)
-//    * Proyects with npm: install it with npm and import it into this file
+//    * Projects with npm: install it with npm and import it into this file
+
+// Done!
 
 
 // 👉 TASK 5- Fetch dogs from `https://dog.ceo/api/breed/{breed}/images/random/{number}`
 //    * ON SUCCESS: use the data to create dogCards and append them to the entry point
 //    * ON FAILURE: log the error to the console
 //    * IN ANY CASE: log "done" to the console
+axios
+.get('https://dog.ceo/api/breed/retriever/images/random/6')
+.then(res => {
+  console.log(res)
+  
+  const images = res.data.message
+  console.log(images);
+
+  // loop over the array of images
+  images.forEach(dog => {
+    // use dogCardMaker
+    const newDogCard = dogCardMaker({ imageURL: dog, breed: 'Retriever' });
+
+    //append to entryPoint scaffold for dog cards
+    entryPoint.appendChild(newDogCard);
+  })
+
+})
+.catch((err) => {
+  // handle the error
+  console.log(err);
+})
 
 
 // 👉 (OPTIONAL) TASK 6- Wrap the fetching operation inside a function `getDogs`
